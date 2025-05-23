@@ -1,0 +1,14 @@
+[project]
+name = "hexlet-code1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask",
+    "gunicorn",
+    "python-dotenv"
+]
+
+[tool.setuptools.packages.find]
+where = ["page_analyzer"]
