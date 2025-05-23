@@ -18,6 +18,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Install dependencies
+      run: uv pip install -r requirements.txt
+
+      - name: Lint
+      run: make lint
+      
       - name: Hexlet project check
         uses: hexlet/project-action@release
         with:
