@@ -8,9 +8,13 @@ from bs4 import BeautifulSoup
 import psycopg2
 from datetime import datetime
 import psycopg2.extras
+import logging
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @app.route('/')
 def index():
@@ -20,7 +24,6 @@ def index():
 def add_url():
     url = request.form.get('url', '').strip()
     
-    # Валидация URL
     if not url:
         flash('URL обязателен', 'danger')
         return render_template('index.html')
@@ -33,14 +36,12 @@ def add_url():
         flash('URL превышает 255 символов', 'danger')
         return render_template('index.html', url=url)
 
-    # Нормализация URL
     parsed_url = urlparse(url)
     normalized_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
 
     try:
         with get_connection() as conn:
             with conn.cursor() as cur:
-                # Проверяем, существует ли уже такой URL
                 cur.execute("SELECT id FROM urls WHERE name = %s", (normalized_url,))
                 row = cur.fetchone()
                 
@@ -48,7 +49,6 @@ def add_url():
                     flash('Страница уже существует', 'info')
                     return redirect(url_for('url_show', id=row[0]))
                 
-                # Добавляем новый URL
                 cur.execute(
                     "INSERT INTO urls (name, created_at) VALUES (%s, %s) RETURNING id", 
                     (normalized_url, datetime.now())
@@ -68,7 +68,6 @@ def url_show(id):
     try:
         with get_connection() as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-                # Получаем информацию о URL
                 cur.execute('SELECT * FROM urls WHERE id = %s', (id,))
                 url = cur.fetchone()
                 
@@ -76,7 +75,6 @@ def url_show(id):
                     flash('Страница не найдена', 'danger')
                     return redirect(url_for('urls'))
                 
-                # Получаем все проверки для этого URL
                 cur.execute(
                     'SELECT * FROM url_checks WHERE url_id = %s ORDER BY created_at DESC', 
                     (id,)
@@ -131,24 +129,19 @@ def url_check(id):
 
                 url = row[0]
 
-                # Выполняем HTTP-запрос
                 try:
                     response = requests.get(url, timeout=10)
                     status_code = response.status_code
                     
-                    # Парсим HTML только если запрос успешен
                     if response.status_code == 200:
                         soup = BeautifulSoup(response.text, 'html.parser')
                         
-                        # Извлекаем h1
                         h1_tag = soup.find('h1')
                         h1 = h1_tag.get_text(strip=True) if h1_tag else ''
                         
-                        # Извлекаем title
                         title_tag = soup.find('title')
                         title = title_tag.get_text(strip=True) if title_tag else ''
                         
-                        # Извлекаем description
                         meta_desc = soup.find('meta', attrs={'name': 'description'})
                         description = meta_desc.get('content', '').strip() if meta_desc else ''
                     else:
@@ -158,7 +151,6 @@ def url_check(id):
                     flash('Произошла ошибка при проверке сайта', 'danger')
                     return redirect(url_for('url_show', id=id))
 
-                # Сохраняем результаты проверки
                 cur.execute('''
                     INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at)
                     VALUES (%s, %s, %s, %s, %s, %s)
