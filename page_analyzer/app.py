@@ -18,6 +18,7 @@ def index():
 @app.route('/urls', methods=['GET'])
 def urls_list():
     urls = get_all_urls()
+    print(f"Retrieved URLs: {urls}")  # Отладочный вывод
     return render_template('urls.html', urls=urls)
 
 @app.route('/urls/<int:id>')
@@ -27,6 +28,7 @@ def url_detail(id):
         flash('URL не найден', 'danger')
         return redirect(url_for('urls_list'))
     checks = get_checks_by_url_id(id)
+    print(f"URL {id} details: {url}, Checks: {checks}")  # Отладочный вывод
     return render_template('url.html', url=url, checks=checks)
 
 @app.route('/urls', methods=['POST'])
@@ -76,11 +78,12 @@ def run_check(id):
         
         update_check_status(check_id, status_code, h1, title, description)
         flash('Страница успешно проверена', 'success')
-    except requests.RequestException:
+    except requests.RequestException as e:
         with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("DELETE FROM url_checks WHERE id = %s", (check_id,))
                 conn.commit()
-        flash('Произошла ошибка при проверке', 'danger')
+        flash('Произошла ошибка при проверке: ' + str(e), 'danger')
+        print(f"Error during check: {e}")
     
     return redirect(url_for('url_detail', id=id))

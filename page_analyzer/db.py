@@ -1,3 +1,4 @@
+# page_analyzer/db.py
 import psycopg2
 from datetime import datetime
 from dotenv import load_dotenv
@@ -7,7 +8,11 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 def get_connection():
-    return psycopg2.connect(DATABASE_URL)
+    try:
+        return psycopg2.connect(DATABASE_URL)
+    except psycopg2.Error as e:
+        print(f"Database connection error: {e}")
+        raise
 
 def add_url(url):
     with get_connection() as conn:
