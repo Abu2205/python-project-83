@@ -9,7 +9,10 @@ dependencies = [
     "gunicorn",
     "python-dotenv",
     "psycopg2-binary",
-    "validators"
+    "validators",
+    "requests",
+    "beautifulsoup4",
+    "flake8"
 ]
 
 [tool.setuptools.packages.find]
