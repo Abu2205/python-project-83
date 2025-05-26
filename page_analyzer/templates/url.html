@@ -1,0 +1,29 @@
+<form method="post" action="{{ url_for('url_check', id=url.id) }}">
+  <button type="submit" class="btn btn-primary">Запустить проверку</button>
+</form>
+
+<h2>Проверки</h2>
+<table class="table" data-test="checks">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Код ответа</th>
+      <th>h1</th>
+      <th>title</th>
+      <th>description</th>
+      <th>Дата</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for check in checks %}
+      <tr>
+        <td>{{ check.id }}</td>
+        <td>{{ check.status_code }}</td>
+        <td>{{ check.h1 }}</td>
+        <td>{{ check.title }}</td>
+        <td>{{ check.description }}</td>
+        <td>{{ check.created_at }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

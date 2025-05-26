@@ -7,7 +7,9 @@ requires-python = ">=3.13"
 dependencies = [
     "flask",
     "gunicorn",
-    "python-dotenv"
+    "python-dotenv",
+    "psycopg2-binary",
+    "validators"
 ]
 
 [tool.setuptools.packages.find]
