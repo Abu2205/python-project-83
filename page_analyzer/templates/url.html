@@ -1,29 +1,83 @@
-<form method="post" action="{{ url_for('url_check', id=url.id) }}">
-  <button type="submit" class="btn btn-primary">Запустить проверку</button>
-</form>
+{% extends "layout.html" %}
 
-<h2>Проверки</h2>
-<table class="table" data-test="checks">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Код ответа</th>
-      <th>h1</th>
-      <th>title</th>
-      <th>description</th>
-      <th>Дата</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for check in checks %}
-      <tr>
-        <td>{{ check.id }}</td>
-        <td>{{ check.status_code }}</td>
-        <td>{{ check.h1 }}</td>
-        <td>{{ check.title }}</td>
-        <td>{{ check.description }}</td>
-        <td>{{ check.created_at }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% block content %}
+<div class="container-lg mt-3">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Сайт: {{ url.name }}</h1>
+
+      <div class="mb-4">
+        <form method="post" action="{{ url_for('url_check', id=url.id) }}">
+          <button type="submit" class="btn btn-primary">Запустить проверку</button>
+        </form>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Информация о сайте</h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-borderless" data-test="url">
+            <tr>
+              <th scope="row" class="text-muted">ID</th>
+              <td>{{ url.id }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="text-muted">Имя</th>
+              <td>{{ url.name }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="text-muted">Дата создания</th>
+              <td>{{ url.created_at.strftime('%Y-%m-%d %H:%M:%S') if url.created_at else '' }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Проверки</h5>
+        </div>
+        <div class="card-body">
+          {% if checks %}
+            <div class="table-responsive">
+              <table class="table table-striped" data-test="checks">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Код ответа</th>
+                    <th>h1</th>
+                    <th>title</th>
+                    <th>description</th>
+                    <th>Дата проверки</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for check in checks %}
+                    <tr>
+                      <td>{{ check.id }}</td>
+                      <td>
+                        {% if check.status_code %}
+                          <span class="badge bg-{{ 'success' if check.status_code == 200 else 'warning' if check.status_code < 400 else 'danger' }}">
+                            {{ check.status_code }}
+                          </span>
+                        {% endif %}
+                      </td>
+                      <td>{{ check.h1 if check.h1 else '' }}</td>
+                      <td>{{ check.title if check.title else '' }}</td>
+                      <td>{{ check.description if check.description else '' }}</td>
+                      <td>{{ check.created_at.strftime('%Y-%m-%d %H:%M:%S') if check.created_at else '' }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <p class="text-muted">Проверки еще не проводились</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
