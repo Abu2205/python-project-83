@@ -12,7 +12,15 @@ render-start:
 	gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
 build:
-	./build.sh
+	@if [ "$$SKIP_DB" = "true" ]; then \
+		echo "Skipping DB initialization (SKIP_DB=true)"; \
+	else \
+		echo "Initializing DB..."; \
+		psql $$DATABASE_URL -f database.sql; \
+	fi
+
+init-db:
+	psql $$DATABASE_URL -f database.sql
 
 lint:
 	flake8 page_analyzer
