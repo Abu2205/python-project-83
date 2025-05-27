@@ -1,53 +1,72 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h1 class="mb-3">Сайт: {{ url[1] }}</h1>
-<table class="table" data-test="url">
-    <tbody>
-        <tr>
-            <th scope="row">ID</th>
-            <td>{{ url[0] }}</td>
-        </tr>
-        <tr>
-            <th scope="row">Имя</th>
-            <td>{{ url[1] }}</td>
-        </tr>
-        <tr>
-            <th scope="row">Дата создания</th>
-            <td>{{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
-        </tr>
-    </tbody>
-</table>
+<h1>Сайт: {{ url[1] }}</h1>
 
-<form method="POST" action="{{ url_for('run_check', id=url[0]) }}" class="mb-4">
-    <button type="submit" class="btn btn-primary">Запустить проверку</button>
+<div class="table-responsive">
+  <table class="table table-bordered table-hover text-nowrap" data-test="url">
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td>{{ url[0] }}</td>
+      </tr>
+      <tr>
+        <td>Имя</td>
+        <td>{{ url[1] }}</td>
+      </tr>
+      <tr>
+        <td>Дата создания</td>
+        <td>{{ url[2].strftime('%Y-%m-%d') }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 class="mt-5 mb-3">Проверки</h2>
+<form method="post" action="/urls/{{ url[0] }}/checks">
+  <input type="submit" class="btn btn-primary" value="Запустить проверку">
 </form>
 
-<h2 class="mb-3">Проверки</h2>
-<table class="table" data-test="checks">
+<div>
+  <table class="table table-bordered table-hover mt-2" data-test="checks">
     <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Код ответа</th>
-            <th scope="col">Дата</th>
-            <th scope="col">H1</th>
-            <th scope="col">Title</th>
-            <th scope="col">Description</th>
-        </tr>
+      <tr>
+        <th>ID</th>
+        <th>Код ответа</th>
+        <th>h1</th>
+        <th>title</th>
+        <th>description</th>
+        <th>Дата создания</th>
+      </tr>
     </thead>
     <tbody>
-        {% for check in checks %}
-        <tr>
-            <td>{{ check[0] }}</td>
-            <td>{{ check[2] if check[2] else '-' }}</td>
-            <td>{{ check[6].strftime('%Y-%m-%d %H:%M:%S') }}</td>
-            <td>{{ check[3] if check[3] else '-' }}</td>
-            <td>{{ check[4] if check[4] else '-' }}</td>
-            <td>{{ check[5] if check[5] else '-' }}</td>
-        </tr>
-        {% endfor %}
+      {% for check in checks %}
+      <tr>
+        <td>{{ check[0] }}</td>
+        <td>
+          {%- if check[2] -%}
+            {{ check[2] }}
+          {%- endif -%}
+        </td>
+        <td>
+          {%- if check[3] -%}
+            {{ check[3] }}
+          {%- endif -%}
+        </td>
+        <td>
+          {%- if check[4] -%}
+            {{ check[4] }}
+          {%- endif -%}
+        </td>
+        <td>
+          {%- if check[5] -%}
+            {{ check[5] }}
+          {%- endif -%}
+        </td>
+        <td>{{ check[6].strftime('%Y-%m-%d') }}</td>
+      </tr>
+      {% endfor %}
     </tbody>
-</table>
-
-<a href="{{ url_for('urls_list') }}" class="btn btn-secondary">Назад</a>
+  </table>
+</div>
 {% endblock %}
