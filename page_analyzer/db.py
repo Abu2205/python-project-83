@@ -19,7 +19,10 @@ def get_connection():
 def add_url(url):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id FROM urls WHERE name = %s", (url,))
+            cur.execute(
+                "SELECT id FROM urls WHERE name = %s",
+                (url,),
+            )
             existing_url = cur.fetchone()
             if existing_url:
                 return existing_url[0], False
@@ -35,14 +38,20 @@ def add_url(url):
 def get_url_by_id(url_id):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT * FROM urls WHERE id = %s", (url_id,))
+            cur.execute(
+                "SELECT * FROM urls WHERE id = %s",
+                (url_id,),
+            )
             return cur.fetchone()
 
 
 def get_url_by_name(name):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT * FROM urls WHERE name = %s", (name,))
+            cur.execute(
+                "SELECT * FROM urls WHERE name = %s",
+                (name,),
+            )
             return cur.fetchone()
 
 
@@ -94,12 +103,22 @@ def get_checks_by_url_id(url_id):
 
 
 def update_check_status(
-    check_id, status_code, h1=None, title=None, description=None
+    check_id,
+    status_code,
+    h1=None,
+    title=None,
+    description=None,
 ):
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
                 "UPDATE url_checks SET status_code = %s, h1 = %s, title = %s, description = %s WHERE id = %s",
-                (status_code, h1, title, description, check_id),
+                (
+                    status_code,
+                    h1,
+                    title,
+                    description,
+                    check_id,
+                ),
             )
             conn.commit()
