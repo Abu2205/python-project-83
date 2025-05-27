@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 import validators
 import requests
 from bs4 import BeautifulSoup
-from page_analyzer.db import add_url, get_url_by_id, get_url_by_name, get_all_urls, add_url_check, get_checks_by_url_id, update_check_status
+from page_analyzer.db import add_url, get_url_by_id, get_url_by_name, get_all_urls, add_url_check, get_checks_by_url_id, update_check_status, get_connection
 
 load_dotenv()
 app = Flask(__name__)
@@ -18,7 +18,7 @@ def index():
 @app.route('/urls', methods=['GET'])
 def urls_list():
     urls = get_all_urls()
-    print(f"Retrieved URLs: {urls}")  # Отладочный вывод
+    print(f"Retrieved URLs: {urls}")
     return render_template('urls.html', urls=urls)
 
 @app.route('/urls/<int:id>')
@@ -28,7 +28,7 @@ def url_detail(id):
         flash('URL не найден', 'danger')
         return redirect(url_for('urls_list'))
     checks = get_checks_by_url_id(id)
-    print(f"URL {id} details: {url}, Checks: {checks}")  # Отладочный вывод
+    print(f"URL {id} details: {url}, Checks: {checks}")
     return render_template('url.html', url=url, checks=checks)
 
 @app.route('/urls', methods=['POST'])

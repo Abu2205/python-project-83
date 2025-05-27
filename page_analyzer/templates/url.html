@@ -28,8 +28,8 @@
     <thead>
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">Дата</th>
             <th scope="col">Код ответа</th>
+            <th scope="col">Дата</th>
             <th scope="col">H1</th>
             <th scope="col">Title</th>
             <th scope="col">Description</th>
@@ -39,8 +39,8 @@
         {% for check in checks %}
         <tr>
             <td>{{ check[0] }}</td>
-            <td>{{ check[6].strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td>{{ check[2] if check[2] else '-' }}</td>
+            <td>{{ check[6].strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td>{{ check[3] if check[3] else '-' }}</td>
             <td>{{ check[4] if check[4] else '-' }}</td>
             <td>{{ check[5] if check[5] else '-' }}</td>
