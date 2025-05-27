@@ -28,7 +28,7 @@ def add_url(url):
                 return existing_url[0], False
             created_at = datetime.utcnow()
             cur.execute(
-                "INSERT INTO urls (name, created_at) " \
+                "INSERT INTO urls (name, created_at) "
                 "VALUES (%s, %s) RETURNING id",
                 (url, created_at),
             )
@@ -86,7 +86,7 @@ def add_url_check(url_id):
         with conn.cursor() as cur:
             created_at = datetime.utcnow()
             cur.execute(
-                "INSERT INTO url_checks (url_id, created_at) " \
+                "INSERT INTO url_checks (url_id, created_at) "
                 "VALUES (%s, %s) RETURNING id",
                 (url_id, created_at),
             )
@@ -98,7 +98,7 @@ def get_checks_by_url_id(url_id):
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                "SELECT * FROM url_checks WHERE url_id = %s " \
+                "SELECT * FROM url_checks WHERE url_id = %s "
                 "ORDER BY created_at DESC",
                 (url_id,),
             )
@@ -115,8 +115,8 @@ def update_check_status(
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                "UPDATE url_checks " \
-                "SET status_code = %s, h1 = %s, title = %s, description = %s " \
+                "UPDATE url_checks "
+                "SET status_code = %s, h1 = %s, title = %s, description = %s "
                 "WHERE id = %s",
                 (
                     status_code,
