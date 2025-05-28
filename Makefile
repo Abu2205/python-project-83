@@ -10,7 +10,6 @@ start:
 	gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
 render-start:
-	pip install -r requirements.txt
 	gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
 build:
