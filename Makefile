@@ -10,9 +10,8 @@ start:
 	gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
 render-start:
-	python3 -m venv venv
-	. venv/bin/activate && pip install -r requirements.txt
-	venv/bin/gunicorn -w 4 -b 0.0.0.0:$(PORT) page_analyzer:app
+	pip install -r requirements.txt
+	gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
 build:
 	./build.sh
